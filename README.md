@@ -1,10 +1,21 @@
-# README - Proyecto de Tesis
+# Proyecto de Tesis
+
+Este repositorio contiene todo lo necesario para replicar y entender el desarrollo de un chatbot basado en la técnica **Retrieval-Augmented Generation (RAG)**, utilizando **Ollama** y **OpenWebUI**.
+
+## Contenido
+
+- [Metodología](#metodología)
+- [Instalación de Ollama](#instalación-de-ollama)
+- [Instalación de Modelos de Lenguaje](#instalación-de-modelos-de-lenguaje)
+- [Instalación de la Interfaz Gráfica con OpenWebUI](#instalación-de-la-interfaz-gráfica-con-openwebui)
+- [Evaluación de Modelos](#evaluación-de-modelos)
+- [Requisitos para las Pruebas](#requisitos-para-las-pruebas)
 
 ## Metodología
 
 Este proyecto está basado en la implementación de un chatbot utilizando la técnica **Retrieval-Augmented Generation (RAG)**. Para ello, se aprovecharon APIs preexistentes como **Ollama** y **OpenWebUI**. Además, se realizaron pruebas con diversos modelos de lenguaje dependiendo del objetivo.
 
-### Instalación de Ollama
+## Instalación de Ollama
 
 El primer paso fue instalar Ollama en el servidor. Este entorno permite al chatbot funcionar de manera aislada, asegurando estabilidad durante las pruebas y la implementación. **Nota:** Todos los comandos deben ejecutarse desde una terminal de Linux.
 
@@ -16,7 +27,7 @@ El primer paso fue instalar Ollama en el servidor. Este entorno permite al chatb
 2. Una vez instalado, Ollama estará funcionando en el puerto **11434** de la máquina.
 3. Para verificar que la instalación fue exitosa, abra un navegador y acceda a `http://host:11434`. Debería aparecer el mensaje: **“Ollama is running”**.
 
-### Instalación de Modelos de Lenguaje
+## Instalación de Modelos de Lenguaje
 
 Con Ollama instalado, se procedió a instalar los modelos de lenguaje necesarios para el proyecto. Esto se realiza mediante el siguiente comando:
 ```bash
@@ -39,15 +50,7 @@ ollama pull modelName
 | mixtral              | latest    | 47 mil millones     |
 | llama3.1             | 70b       | 70.6 mil millones   |
 
-### Prueba de los Modelos de Lenguaje
-
-Una vez instalados los modelos, es posible probar su funcionalidad desde el servidor, sin necesidad de una interfaz gráfica, utilizando el siguiente comando:
-```bash
-ollama run modelName
-```
-Esto permite interactuar con los modelos seleccionados, realizar preguntas y verificar sus respuestas para confirmar que se instalaron correctamente.
-
-### Instalación de la Interfaz Gráfica con OpenWebUI
+## Instalación de la Interfaz Gráfica con OpenWebUI
 
 Lo más importante ahora es la interacción de los usuarios, particularmente en el caso de la comunidad USFQ, con el sistema. Para ello, se implementó una interfaz gráfica utilizando OpenWebUI, disponible en su página oficial.
 
@@ -63,7 +66,7 @@ docker run -d -p 3000:8080 --gpus all --add-host=host.docker.internal:host-gatew
 
 Con esto, el sistema está listo para realizar pruebas de rendimiento y evaluar la experiencia del usuario.
 
-### Evaluación de Modelos
+## Evaluación de Modelos
 
 Para garantizar el correcto funcionamiento de los modelos de lenguaje instalados en el servidor Ollama, y evaluar su rendimiento en términos de velocidad y eficiencia, se desarrolló un script en Python. El código tiene como objetivo medir métricas clave de desempeño, como el tiempo de respuesta, el número de tokens generados y la velocidad en tokens por segundo para cada modelo instalado. Se usó la biblioteca `requests` para realizar solicitudes HTTP a la API de Ollama directamente. Para manejar las respuestas y almacenar los resultados se usaron archivos JSON. 
 
@@ -103,7 +106,7 @@ La gráfica de tokens por segundo utiliza como referencia los 35.68 tokens/segun
 
 Los modelos más pequeños en términos de parámetros, como `llama3.2` y `phi3.5:latest`, procesan más tokens por segundo, lo que refuerza su eficiencia en comparación a modelos más grandes. Sin embargo, esto no implica necesariamente mayor calidad en las respuestas, sino un mejor rendimiento computacional.
 
-#### Requisitos para las Pruebas
+## Requisitos para las Pruebas
 
 - Ejecutar el archivo Python `Tiempos de respuesta.py` para medir el rendimiento.
 - Ejecutar el archivo Python `Graficar tiempos de respuesta.py` para generar las gráficas correspondientes.
