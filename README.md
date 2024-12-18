@@ -1,101 +1,70 @@
-# Proyecto Integrador
+# Proyecto de Tesis
 
-Este repositorio contiene todo lo necesario para replicar y entender el desarrollo de un chatbot basado en la técnica **Retrieval-Augmented Generation (RAG)**, utilizando **Ollama** y **OpenWebUI**.
+Este repositorio contiene todo lo necesario para replicar el desarrollo de un chatbot basado en la técnica **Retrieval-Augmented Generation (RAG)**, utilizando **Ollama** y **OpenWebUI**.
 
 ## Contenido
 
-- [Metodología](#metodología)
-- [Instalación de Ollama](#instalación-de-ollama)
-- [Instalación de Modelos de Lenguaje](#instalación-de-modelos-de-lenguaje)
-- [Instalación de la Interfaz Gráfica con OpenWebUI](#instalación-de-la-interfaz-gráfica-con-openwebui)
+- [Descripción General](#descripción-general)
+- [Requisitos Previos](#requisitos-previos)
+- [Instalación](#instalación)
+  - [Instalación de Ollama](#1-instalación-de-ollama)
+  - [Instalación de OpenWebUI](#2-instalación-de-openwebui)
+  - [Instalación de Modelos de Lenguaje](#3-instalación-de-modelos-de-lenguaje)
+- [Configuración del Sistema](#configuración-del-sistema)
 - [Evaluación de Modelos](#evaluación-de-modelos)
-- [Requisitos para las Pruebas](#requisitos-para-las-pruebas)
+- [Evaluación de Respuestas](#evaluación-de-respuestas)
+  - [Cargar Preguntas](#1-cargar-preguntas)
+  - [Ejecutar Evaluación](#2-ejecutar-evaluación)
+- [Generación de Gráficas](#generación-de-gráficas)
 - [Creación de un Modelo Personalizado "Asistente"](#creación-de-un-modelo-personalizado-asistente)
+- [Contacto](#contacto)
 
-## Metodología
+## Descripción General
 
-Este proyecto está basado en la implementación de un chatbot utilizando la técnica **Retrieval-Augmented Generation (RAG)**. Para ello, se aprovecharon APIs preexistentes como **Ollama** y **OpenWebUI**. Además, se realizaron pruebas con diversos modelos de lenguaje dependiendo del objetivo.
+Este proyecto busca evaluar el desempeño de diferentes modelos de lenguaje en la tarea de responder preguntas utilizando documentos cargados como base de conocimiento. La metodología incluye:
 
-## Instalación de Ollama
+1. Configuración de un entorno de pruebas con **Ollama** y **OpenWebUI**.
+2. Instalación de modelos de lenguaje.
+3. Pruebas con múltiples usuarios simulados.
+4. Análisis de resultados utilizando métricas de evaluación como Similaridad del Coseno, BERTscore y Rouge-L.
 
-El primer paso fue instalar Ollama en el servidor. Este entorno permite al chatbot funcionar de manera aislada, asegurando estabilidad durante las pruebas y la implementación. **Nota:** Todos los comandos deben ejecutarse desde una terminal de Linux.
+## Requisitos Previos
 
-#### Pasos para la instalación:
-1. Ejecutar el siguiente comando para instalar Ollama desde su web oficial:
-   ```bash
-   curl -fsSL https://ollama.com/install.sh | sh
-   ```
-2. Una vez instalado, Ollama estará funcionando en el puerto **11434** de la máquina.
-3. Para verificar que la instalación fue exitosa, abra un navegador y acceda a `http://host:11434`. Debería aparecer el mensaje: **“Ollama is running”**.
+- **Sistema Operativo:** Linux.
+- **Recursos de Hardware:**
+  - GPU Nvidia compatible con Docker.
+  - Al menos 16 GB de RAM.
+- **Software:**
+  - Docker
+  - Python 3.x
+  - Selenium
+  - Bibliotecas: `numpy`, `matplotlib`, `scikit-learn`, `sentence-transformers`, `rouge`, `bert-score`
 
-## Instalación de Modelos de Lenguaje
+## Instalación
 
-Con Ollama instalado, se procedió a instalar los modelos de lenguaje necesarios para el proyecto. Esto se realiza mediante el siguiente comando:
+### 1. Instalación de Ollama
+Ejecuta el siguiente comando para instalar Ollama:
 ```bash
-ollama pull modelName
+curl -fsSL https://ollama.com/install.sh | sh
 ```
 
-#### Modelos instalados:
-
-| Nombre del Modelo     | Versión  | Parámetros         |
-|-----------------------|-----------|---------------------|
-| llama3.2             | 3b        | 3.2 mil millones    |
-| phi3.5               | latest    | 3.8 mil millones    |
-| llama2-uncensored    | latest    | 7 mil millones      |
-| llama3.1             | latest    | 8 mil millones      |
-| codegemma            | latest    | 9 mil millones      |
-| gemma                | latest    | 9 mil millones      |
-| gemma2               | latest    | 9.2 mil millones    |
-| deepseek-coder-v2    | 16b       | 15.7 mil millones   |
-| llava                | 34b       | 34 mil millones     |
-| mixtral              | latest    | 47 mil millones     |
-| llama3.1             | 70b       | 70.6 mil millones   |
-
-## Instalación de la Interfaz Gráfica con OpenWebUI
-
-Lo más importante ahora es la interacción de los usuarios, particularmente en el caso de la comunidad USFQ, con el sistema. Para ello, se implementó una interfaz gráfica utilizando OpenWebUI, disponible en su página oficial.
-
-El servidor de la Universidad cuenta con GPU Nvidia, por lo que la interfaz OpenWebUI se ejecuta mediante un contenedor Docker con el siguiente comando:
+### 2. Instalación de OpenWebUI
+Ejecuta este comando para iniciar un contenedor Docker con OpenWebUI:
 ```bash
 docker run -d -p 3000:8080 --gpus all --add-host=host.docker.internal:host-gateway -v open-webui:/app/backend/data --name open-webui --restart always ghcr.io/open-webui/open-webui:cuda
 ```
+Accede a OpenWebUI en `http://<tu-ip>:3000/` para configurar la interfaz gráfica.
 
-#### Verificación de la Instalación:
-1. Acceda a `http://172.21.230.10:3000/` desde un navegador web.
-2. Cree una cuenta de administrador al ingresar por primera vez.
-3. Una vez dentro, puede comenzar a ingresar prompts y seleccionar el modelo de su preferencia para obtener respuestas.
-
-Con esto, el sistema está listo para realizar pruebas de rendimiento y evaluar la experiencia del usuario.
-
-## Evaluación de Modelos
-
-Para garantizar el correcto funcionamiento de los modelos de lenguaje instalados en el servidor Ollama, y evaluar su rendimiento en términos de velocidad y eficiencia, se desarrolló un script en Python. El código tiene como objetivo medir métricas clave de desempeño, como el tiempo de respuesta, el número de tokens generados y la velocidad en tokens por segundo para cada modelo instalado. Se usó la biblioteca `requests` para realizar solicitudes HTTP a la API de Ollama directamente. Para manejar las respuestas y almacenar los resultados se usaron archivos JSON. 
-
-La API de Ollama permitió realizar pruebas automatizadas con prompts predefinidos, mientras que su documentación oficial sirvió como referencia para la correcta configuración de las solicitudes. Este enfoque permitió identificar los modelos más rápidos y eficientes.
-
-#### Prompt de Prueba
-
-Para las pruebas de rendimiento se usó la pregunta: **“¿Por qué el cielo es azul?”**. Esta pregunta evalúa conocimientos científicos básicos, razonamiento lógico y la capacidad del modelo de generar texto coherente. Es una referencia estándar y fácil de validar, lo que permite que sea usada en la comparación de modelos.
-
-#### Visualización de Resultados
-
-Para visualizar y comparar de mejor manera los resultados, se realizaron las siguientes gráficas:
-
-1. **Gráfica 1:** Tokens promedio procesados por modelo.
-2. **Gráfica 2:** Tiempo de respuesta promedio de los modelos.
-3. **Gráfica 3:** Tokens por segundo promedio de cada modelo.
-
-La gráfica de tokens por segundo utiliza como referencia los 35.68 tokens/segundo generados por el modelo GPT-4 Turbo, según su documentación oficial.
-
-#### Observaciones
-
-Los modelos más pequeños en términos de parámetros, como `llama3.2` y `phi3.5:latest`, procesan más tokens por segundo, lo que refuerza su eficiencia en comparación a modelos más grandes. Sin embargo, esto no implica necesariamente mayor calidad en las respuestas, sino un mejor rendimiento computacional.
-
-## Requisitos para las Pruebas
-
-- Ejecutar el archivo Python `Tiempos de respuesta.py` para medir el rendimiento.
-- Ejecutar el archivo Python `Graficar tiempos de respuesta.py` para generar las gráficas correspondientes.
-
+### 3. Instalación de Modelos de Lenguaje
+Para instalar un modelo de lenguaje, usa el siguiente comando:
+```bash
+ollama pull <modelName>
+```
+Modelos recomendados:
+- llama3.2
+- phi3.5
+- llama2-uncensored
+- codegemma
 
 ## Configuración del Sistema
 
@@ -131,11 +100,6 @@ Ejecuta el script `Generar Gráficas Métricas.py` para generar gráficas de las
 2. Ejecuta el script para generar gráficos de Similaridad del Coseno, BERTscore y Rouge-L.
 3. Las gráficas se guardarán en la carpeta de salida especificada en el script.
 
-## Contacto
-Si tienes preguntas o comentarios, abre un issue en este repositorio.
-
-
-
 ## Creación de un Modelo Personalizado "Asistente"
 
 La interfaz de OpenWebUI permite crear modelos derivados personalizados. En este caso, el modelo **"Asistente"** se configura como sigue:
@@ -148,5 +112,6 @@ La interfaz de OpenWebUI permite crear modelos derivados personalizados. En este
 4. **Documentación:** Se seleccionan los documentos previamente subidos en la sección de RAG como referencia para que el modelo pueda generar respuestas basadas en ellos.
 5. **Guardar Configuración:** Finalmente, se guarda la configuración y el modelo está listo para ser usado.
 
-Para cualquier duda o problema, consulta la documentación de OpenWebUI y Ollama.
+## Contacto
+Si tienes preguntas o comentarios, abre un issue en este repositorio.
 
