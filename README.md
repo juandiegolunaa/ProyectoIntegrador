@@ -10,6 +10,7 @@ Este repositorio contiene todo lo necesario para replicar y entender el desarrol
 - [Instalación de la Interfaz Gráfica con OpenWebUI](#instalación-de-la-interfaz-gráfica-con-openwebui)
 - [Evaluación de Modelos](#evaluación-de-modelos)
 - [Requisitos para las Pruebas](#requisitos-para-las-pruebas)
+- [Creación de un Modelo Personalizado "Asistente"](#creación-de-un-modelo-personalizado-asistente)
 
 ## Metodología
 
@@ -76,22 +77,6 @@ La API de Ollama permitió realizar pruebas automatizadas con prompts predefinid
 
 Para las pruebas de rendimiento se usó la pregunta: **“¿Por qué el cielo es azul?”**. Esta pregunta evalúa conocimientos científicos básicos, razonamiento lógico y la capacidad del modelo de generar texto coherente. Es una referencia estándar y fácil de validar, lo que permite que sea usada en la comparación de modelos.
 
-#### Resultados de las Pruebas
-
-| Nombre del modelo     | Parámetros (MM) | Tiempo de respuesta promedio (s) | Número promedio de tokens generados | Promedio de tokens por segundo (tokens/s) |
-|-----------------------|-----------------|-----------------------------------|-------------------------------------|--------------------------------------------|
-| llama3.2             | 3.2             | 2.76                              | 348.00                              | 134.85                                     |
-| phi3.5               | 3.8             | 4.78                              | 760.60                              | 159.15                                     |
-| llama2-uncensored    | 7               | 1.08                              | 114.55                              | 113.79                                     |
-| llama3.1             | 8               | 3.49                              | 370.30                              | 109.19                                     |
-| codegemma            | 9               | 2.31                              | 231.10                              | 103.16                                     |
-| gemma                | 9               | 2.11                              | 217.55                              | 106.80                                     |
-| gemma2               | 9.2             | 3.28                              | 207.15                              | 66.67                                      |
-| deepseek-coder-v2    | 15.7            | 5.06                              | 314.10                              | 64.48                                      |
-| llava                | 34              | 4.35                              | 157.60                              | 39.72                                      |
-| mixtral              | 47              | 3.69                              | 201.75                              | 64.14                                      |
-| llama3.1             | 70.6            | 14.81                             | 345.10                              | 23.99                                      |
-
 #### Visualización de Resultados
 
 Para visualizar y comparar de mejor manera los resultados, se realizaron las siguientes gráficas:
@@ -110,4 +95,58 @@ Los modelos más pequeños en términos de parámetros, como `llama3.2` y `phi3.
 
 - Ejecutar el archivo Python `Tiempos de respuesta.py` para medir el rendimiento.
 - Ejecutar el archivo Python `Graficar tiempos de respuesta.py` para generar las gráficas correspondientes.
+
+
+## Configuración del Sistema
+
+### 1. Cargar Documentos
+En OpenWebUI, carga los documentos que usarás como base de conocimiento desde la sección de configuración de documentos.
+
+### 2. Configurar Parámetros
+En OpenWebUI:
+- **Modelo de Embedding:** `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2`
+- **Tamaño de Fragmentos:** 1024 tokens
+- **Superposición de Fragmentos:** 100 tokens
+- **Top K:** 10 documentos
+
+## Evaluación de Modelos
+
+Usa el script `Guardar Respuestas Generadas En JSON.py` para realizar las evaluaciones:
+1. Define los modelos a evaluar.
+2. Simula múltiples usuarios enviando preguntas desde un archivo JSON.
+3. Guarda las respuestas generadas en un archivo `responses.json`.
+
+## Evaluación de Respuestas
+
+### 1. Cargar Preguntas
+Usa el script `Guardar Preguntas y Respuestas en JSON.py` para cargar las preguntas desde un archivo `.txt` y convertirlas en un archivo JSON.
+
+### 2. Ejecutar Evaluación
+Ejecuta el script de evaluación para comparar las respuestas generadas por los modelos con las respuestas de referencia.
+
+## Generación de Gráficas
+
+Ejecuta el script `Generar Gráficas Métricas.py` para generar gráficas de las métricas obtenidas:
+1. Coloca todos los archivos JSON en la carpeta de respuestas.
+2. Ejecuta el script para generar gráficos de Similaridad del Coseno, BERTscore y Rouge-L.
+3. Las gráficas se guardarán en la carpeta de salida especificada en el script.
+
+## Contacto
+Si tienes preguntas o comentarios, abre un issue en este repositorio.
+
+
+
+## Creación de un Modelo Personalizado "Asistente"
+
+La interfaz de OpenWebUI permite crear modelos derivados personalizados. En este caso, el modelo **"Asistente"** se configura como sigue:
+
+1. **Base del Modelo:** Se selecciona `gemma2:latest` como modelo base.
+2. **Descripción del Modelo:** Se establece la siguiente descripción para presentación al usuario:
+   > "¡Soy tu asistente para resolver tus dudas sobre la USFQ! No dudes en consultarme cualquier tema de la Universidad. Información sobre el manual de estudiantes, el código de honor y convivencia de la USFQ, etc. ¡Estoy aquí para servirte!"
+3. **Prompt del Modelo:** Para mejorar la interacción, se configura un prompt que define el tono y rol del modelo:
+   > "Eres una asistente administrativa altamente eficiente y amigable, diseñada para responder preguntas de estudiantes sobre documentos universitarios y procesos académicos. Responde siempre en Español."
+4. **Documentación:** Se seleccionan los documentos previamente subidos en la sección de RAG como referencia para que el modelo pueda generar respuestas basadas en ellos.
+5. **Guardar Configuración:** Finalmente, se guarda la configuración y el modelo está listo para ser usado.
+
+Para cualquier duda o problema, consulta la documentación de OpenWebUI y Ollama.
 
