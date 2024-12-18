@@ -1,4 +1,4 @@
-# Proyecto de Tesis
+# Proyecto Integrador
 
 Este repositorio contiene todo lo necesario para replicar y entender el desarrollo de un chatbot basado en la técnica **Retrieval-Augmented Generation (RAG)**, utilizando **Ollama** y **OpenWebUI**.
 
