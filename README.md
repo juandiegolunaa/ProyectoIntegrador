@@ -113,5 +113,4 @@ La interfaz de OpenWebUI permite crear modelos derivados personalizados. En este
 5. **Guardar Configuración:** Finalmente, se guarda la configuración y el modelo está listo para ser usado.
 
 ## Contacto
-Si tienes preguntas o comentarios, abre un issue en este repositorio.
-
+Si tienes preguntas o comentarios, consulta la documentación de OpenWebUI y Ollama.
